@@ -3,4 +3,5 @@
 .npmignore
 .DS_Store
 .git
+package-lock.json
 node_modules/*
