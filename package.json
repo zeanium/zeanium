@@ -1,6 +1,6 @@
 {
-    "name": "zeanium",
-    "version": "2.0.0",
+    "name": "@zeanium/zeanium",
+    "version": "1.0.0",
     "description": "Javascript OOP framework for Node.js and Browser, React Native.",
     "main": "dist/zn.minx.js",
     "directories": {
