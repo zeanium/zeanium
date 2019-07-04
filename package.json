@@ -1,13 +1,15 @@
 {
   "name": "@zeanium/core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Javascript OOP framework for Node.js and Browser, React Native.",
   "main": "dist/zn.minx.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "build": "gulp"
+    "build": "gulp",
+    "publish": "npm publish --access public",
+    "unpublish": "npm unpublish --access public  --force"
   },
   "author": "yangyxu",
   "email": "xuyy0618@qq.com",
