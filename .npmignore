@@ -1,0 +1,6 @@
+.idea/*
+.gitignore
+.npmignore
+.DS_Store
+.git
+node_modules/*
