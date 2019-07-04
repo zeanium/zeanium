@@ -1,0 +1,1 @@
+!function(s){s.data=s.Class({static:!0,methods:{arrayToTree:function(i,n){var r={},d={},a=[],e=null,t=null,o=s.extend({id:"id",pid:"pid"},n),f=o.id,l=o.pid;for(t in i)r[(e=i[t])[l]]||(r[e[l]]=[]),r[e[l]].push(e),d[e[f]]=e;for(t in i)r[i[t][f]]&&(i[t].children=r[i[t][f]]);for(var u in r)if(!d[u]){a=r[u];break}return a}}})}(zn);
