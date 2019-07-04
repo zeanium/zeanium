@@ -1,35 +1,36 @@
 {
-    "name": "@zeanium/zeanium",
-    "version": "1.0.0",
-    "description": "Javascript OOP framework for Node.js and Browser, React Native.",
-    "main": "dist/zn.minx.js",
-    "directories": {
-        "test": "test"
-    },
-    "scripts": {
-        "build": "gulp"
-    },
-    "author": "yangyxu",
-    "email": "xuyy0618@qq.com",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/zeanium/zeanium.git"
-    },
-    "keywords": [
-        "JavaScript",
-        "OOP",
-        "Node.js",
-        "Class",
-        "Framework"
-    ],
-    "bugs": {
-        "url": "https://github.com/zeanium/zeanium/issues"
-    },
-    "homepage": "https://github.com/zeanium/zeanium#readme",
-    "license": "MIT",
-    "devDependencies": {
-        "gulp": "^4.0.2",
-        "gulp-concat": "^2.6.1",
-        "gulp-uglify": "^3.0.2"
-    }
+  "name": "@zeanium/core",
+  "version": "1.0.0",
+  "description": "Javascript OOP framework for Node.js and Browser, React Native.",
+  "main": "dist/zn.minx.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "build": "gulp"
+  },
+  "author": "yangyxu",
+  "email": "xuyy0618@qq.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zeanium/zeanium.git"
+  },
+  "keywords": [
+    "JavaScript",
+    "OOP",
+    "Node.js",
+    "Class",
+    "Framework"
+  ],
+  "bugs": {
+    "url": "https://github.com/zeanium/zeanium/issues"
+  },
+  "homepage": "https://github.com/zeanium/zeanium#readme",
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-uglify": "^3.0.2"
+  },
+  "dependencies": {}
 }
