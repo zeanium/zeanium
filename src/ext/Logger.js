@@ -20,8 +20,7 @@
      * @class Logger
      * @namespace zn
      **/
-    zn.logger = zn.Class({
-        static: true,
+    var Logger = zn.Class({
         events: [
             'info',
             'debug',
@@ -155,6 +154,8 @@
             }
         }
     });
+
+    zn.logger = new Logger();
 
     var __console = {
         info: function (){
