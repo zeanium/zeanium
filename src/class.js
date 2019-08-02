@@ -553,6 +553,16 @@
             return this;
         },
         /**
+         * Add an event handler.
+         * @method on
+         * @param name {String}
+         * @param handler {Function}
+         * @param [options] {Object}
+         */
+        hasEventHandler: function (name) {
+            return !!(this.__handlers__[name]||[]).length;
+        },
+        /**
          * Remove an event handler.
          * @method off
          * @param name {String}
@@ -612,24 +622,33 @@
         fire: function (name, data, options) {
             var _listeners = this.__handlers__[name],
                 _listener,
-                _result = null;
+                _result = null,
+                _temp = null;
             if (_listeners) {
                 for (var i = 0, length = _listeners.length; i < length; i++) {
                     _listener = _listeners[i];
                     if (_listener && _listener.handler) {
-                        if(options && options.method=='apply'){
-                            _result = _listener.handler.apply(_listener.context || _listener.owner, data);
+                        if (options && options.method == 'apply') {
+                            _temp = _listener.handler.apply(_listener.context || _listener.owner, data);
                         } else {
-                            _result = _listener.handler.call(_listener.context || _listener.owner, _listener.owner, data, options);
+                            _temp = _listener.handler.call(_listener.context || _listener.owner, _listener.owner, data, options);
                         }
-                        if (false === _result) {
+                        if (_temp === false) {
                             return false;
+                        }
+                        if (_temp === -1) {
+                            continue;
+                        }
+                        if (options && options.overwrite) {
+                            _result = _temp;
+                        } else if (_temp) {
+                            return _temp;
                         }
                     }
                 }
             }
 
-            return this;
+            return _result || this;
         },
         /**
          * Dispose current object.
