@@ -1091,7 +1091,7 @@ if (__isServer) {
                 }
             }
 
-            return _result || this;
+            return _result;
         },
         /**
          * Dispose current object.
