@@ -1,1 +1,1 @@
-module.exports = require('dist/zn.minx.js');
+module.exports = require('./dist/zn.minx.js');
