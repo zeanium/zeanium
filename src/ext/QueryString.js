@@ -30,6 +30,9 @@
                 if(typeof value == 'object'){
                     return value;
                 }
+                if(value === '' || value === false || value == null){
+                    return {};
+                }
 
                 var _config = zn.extend({}, this._config, options),
                     _object = {},
