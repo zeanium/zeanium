@@ -57,9 +57,12 @@
                         _key = _item;
                         _value = '';
                     }
+                    if(_key === ''){
+                        continue;
+                    }
+
                     _key = decodeURIComponent(_key);
                     _value = decodeURIComponent(_value);
-
                     if(!(_object).hasOwnProperty(_key)){
                         _object[_key] = _value;
                     }else if(zn.is(_object[_key], 'array')){
