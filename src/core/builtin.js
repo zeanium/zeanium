@@ -46,11 +46,6 @@
                 return v.toString(16);
             }).toUpperCase();
         },
-        serializeJSON: function (data){
-            return Object.keys(data).map(function (key) {
-                return encodeURIComponent(key) + '=' + encodeURIComponent(data[key]);
-            }).join('&');
-        },
         fix: function (target){
             var _target = target||{};
             for (var i = 1, _len = arguments.length; i < _len; i++) {
@@ -75,6 +70,59 @@
                 }
             }
 
+            return _target;
+        },
+        deepAssign: function (target, source){
+            var _tvalue = null,
+                _svalue = null;
+            switch(__toString.call(source)){
+                case "[object Object]":    
+                    for(var key in source){
+                        _tvalue = target[key];
+                        _svalue = source[key];
+            
+                        switch(__toString.call(_svalue)) {
+                            case "[object Object]":
+                                if(__toString.call(_tvalue) == "[object Object]"){
+                                    target[key] = this.deepAssign(_tvalue, _svalue);
+                                } else {
+                                    target[key] = _svalue;
+                                }
+                                break;
+                            case "[object Array]":
+                                if(__toString.call(_tvalue) == "[object Array]"){
+                                    target[key] = target[key].concat(_svalue);
+                                } else {
+                                    target[key] = _svalue;
+                                }
+                                break;
+                            case "[object Null]":
+                            case "[object Boolean]":
+                            case "[object Function]":
+                            case "[object Number]":
+                            case "[object String]":
+                                target[key] = _svalue;
+                                break;
+                            case "[object Undefined]":
+                            default:
+                                break;
+                        }
+                    }
+                    break;
+                case "[object Array]":    
+                    source.unshift(target);
+                    __builtin__.deepAssigns.apply(this, source);
+                    break;
+            }
+            
+            return target;
+        },
+        deepAssigns: function (){
+            var _target = arguments[0];
+            for(var i = 1, _len = arguments.length; i < _len; i++){
+                __builtin__.deepAssign(_target, arguments[i]);
+            }
+    
             return _target;
         },
         overwrite: function (target){

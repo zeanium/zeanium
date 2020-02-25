@@ -4,7 +4,7 @@
 
 var __isServer = Object.prototype.toString.call(typeof process !== 'undefined' ? process : 0) === '[object process]';
 var zn = {
-    VERSION: '0.0.1',
+    VERSION: '1.0.8',
     DEBUG: true,
     ZN_PATH: '',
     PATH: '',
@@ -15,8 +15,7 @@ var zn = {
             return window;
         }
     }).call(null),
-    isServer: __isServer,
-    plugin: {}
+    isServer: __isServer
 };
 
 zn.GLOBAL.zn = zn;

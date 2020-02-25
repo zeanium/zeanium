@@ -2,10 +2,10 @@ var gulp = require('gulp'),
 	uglify = require('gulp-uglify'),
 	concat = require('gulp-concat');
 
-gulp.task('uglify', function(){
-	return gulp.src(['src/*.js'])
+gulp.task('uglify-core', function(){
+	return gulp.src(['src/core/*.js'])
 		.pipe(uglify())
-		.pipe(gulp.dest('dist/minx'));
+		.pipe(gulp.dest('dist/minx/core'));
 });
 
 gulp.task('uglify-ext', function(){
@@ -14,17 +14,42 @@ gulp.task('uglify-ext', function(){
 		.pipe(gulp.dest('dist/minx/ext'));
 });
 
-gulp.task('concat', gulp.series('uglify', 'uglify-ext', function () {
-	return gulp.src(['src/zn.js', 'src/*.js', 'src/ext/*.js'])
+gulp.task('concat-core', gulp.series('uglify-core', function () {
+	return gulp.src(['src/core/zn.js', 'src/core/*.js'])
+		.pipe(concat('zn.core.js'))
+		.pipe(gulp.dest('dist/'));
+}));
+
+gulp.task('concat-core-minx', gulp.series('uglify-core', function () {
+	return gulp.src(['dist/minx/core/zn.js', 'dist/minx/core/*.js'])
+		.pipe(concat('zn.core.minx.js'))
+		.pipe(gulp.dest('dist/'));
+}));
+
+gulp.task('concat-ext', gulp.series('uglify-ext', function () {
+	return gulp.src(['src/ext/*.js'])
+		.pipe(concat('zn.ext.js'))
+		.pipe(gulp.dest('dist/'));
+}));
+
+gulp.task('concat-ext-minx', gulp.series('uglify-ext', function () {
+	return gulp.src(['dist/minx/ext/*.js'])
+		.pipe(concat('zn.ext.minx.js'))
+		.pipe(gulp.dest('dist/'));
+}));
+
+
+gulp.task('concat', gulp.series('uglify-core', 'uglify-ext', function () {
+	return gulp.src(['src/core/zn.js', 'src/core/*.js', 'src/ext/*.js'])
 		.pipe(concat('zn.js'))
 		.pipe(gulp.dest('dist/'));
 }));
 
-gulp.task('concat-minx', gulp.series('uglify', 'uglify-ext', function () {
-	return gulp.src(['dist/minx/zn.js', 'dist/minx/*.js',  'dist/minx/ext/*.js'])
+gulp.task('concat-minx', gulp.series('uglify-core', 'uglify-ext', function () {
+	return gulp.src(['dist/minx/core/zn.js', 'dist/minx/core/*.js',  'dist/minx/ext/*.js'])
 		.pipe(concat('zn.minx.js'))
 		.pipe(gulp.dest('dist/'));
 }));
 
 //建立一个默认执行的任务，这个任务顺序执行上面创建的N个任务
-gulp.task('default', gulp.series('concat', 'concat-minx'));
+gulp.task('default', gulp.series('concat-core', 'concat-core-minx', 'concat-ext', 'concat-ext-minx', 'concat', 'concat-minx'));

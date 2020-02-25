@@ -13,13 +13,13 @@
     /**
      * Date: Date
      * @class Date
-     * @namespace zn.util
+     * @namespace zn.data
      **/
     zn.date = zn.Class({
         static: true,
         methods: {
             format: function (){
-
+                
             },
             nowDateString: function (sep){
                 var date = new Date(),

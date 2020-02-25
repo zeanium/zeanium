@@ -132,8 +132,8 @@
                 }
 
                 if(this.__isOk(_type)){
-                    var _result = this.fire(_type, _data);
-                    if(_result !== false && zn.DEBUG){
+                    var _result = this.fire(_type, _data, _argv);
+                    if(_result !== false){
                         console.log.apply(this, _argv);
                     }
                 }

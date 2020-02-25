@@ -3,5 +3,8 @@
 .npmignore
 .DS_Store
 .git
+gulpfile.js
 package-lock.json
 node_modules/*
+src/*
+__test__/*

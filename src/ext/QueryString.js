@@ -10,7 +10,7 @@
         properties: {
             config: {
                 get: function (){
-
+                    return this._config;
                 }
             }
         },
@@ -113,6 +113,8 @@
                         return JSON.stringify(value);
                     case 'number':
                         return isFinite(value) ? value : '0';
+                    case 'function':
+                        return value();
                     default:
                         return '';
                 }

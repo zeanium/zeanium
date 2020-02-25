@@ -1,8 +1,8 @@
 {
   "name": "@zeanium/core",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Javascript OOP framework for Node.js and Browser, React Native.",
-  "main": "dist/zn.minx.js",
+  "main": "index.js",
   "directories": {
     "test": "test"
   },
