@@ -433,7 +433,7 @@
                     _reg = new RegExp(_regexp, 'i');
             
                 while(_match = _reg.exec(_template)) {
-                    _value = __builtin__.path(data, _match[1].trim());
+                    _value = zn.path(data, _match[1].trim());
                     switch(zn.type(_value)){
                         case 'array':
                             _value = _value.join('');
