@@ -1,6 +1,6 @@
 {
   "name": "@zeanium/core",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Javascript OOP framework for Node.js and Browser, React Native.",
   "main": "index.js",
   "directories": {

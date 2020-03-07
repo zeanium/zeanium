@@ -191,6 +191,15 @@ if (__isServer) {
             
             return target;
         },
+        callOnce: function (fun){
+            var _called = false;
+            return function() {
+                if (!_called) {
+                    _called = true;
+                    fun.apply(this, arguments);
+                }
+            }
+        },
         deepAssigns: function (){
             var _target = arguments[0];
             for(var i = 1, _len = arguments.length; i < _len; i++){
