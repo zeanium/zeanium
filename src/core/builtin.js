@@ -83,6 +83,7 @@
             
                         switch(__toString.call(_svalue)) {
                             case "[object Object]":
+                                _svalue = this.deepAssign({}, _svalue);
                                 if(__toString.call(_tvalue) == "[object Object]"){
                                     target[key] = this.deepAssign(_tvalue, _svalue);
                                 } else {
