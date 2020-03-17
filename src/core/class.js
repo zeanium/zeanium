@@ -834,6 +834,9 @@
                 }
             } else {
                 zn.each(_meta.mixins, function (mixin) {
+                    if(!mixin) {
+                        return;
+                    }
                     var _mixinPrototype = mixin.prototype;
                     zn.each(mixin._events_, function (name) {
                         _Class.defineEvent(name, _mixinPrototype.member(name).meta);
