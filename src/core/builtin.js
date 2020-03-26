@@ -80,6 +80,9 @@
                     for(var key in source){
                         _tvalue = target[key];
                         _svalue = source[key];
+                        if(!source.hasOwnProperty(key) || !target.hasOwnProperty(key)){
+                            continue;
+                        }
             
                         switch(__toString.call(_svalue)) {
                             case "[object Object]":

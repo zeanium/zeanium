@@ -374,6 +374,7 @@
 
             if(_mixins && _mixins.length){
                 zn.each(_mixins, function (mixin){
+                    if(!mixin) return;
                     zn.extend(_props, mixin.getProperties(handler, context));
                 });
             }
@@ -885,6 +886,7 @@
 
             if(_mixins.length){
                 zn.each(_mixins, function (mixin){
+                    if(!mixin) return;
                     if(mixin['@init']){
                         _mixinCtor = mixin['@init'].meta;
                         _mixinCtor = zn.is(_mixinCtor, 'function') ? _mixinCtor : _mixinCtor.value;

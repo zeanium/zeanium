@@ -154,6 +154,9 @@ if (__isServer) {
                     for(var key in source){
                         _tvalue = target[key];
                         _svalue = source[key];
+                        if(!source.hasOwnProperty(key) || !target.hasOwnProperty(key)){
+                            continue;
+                        }
             
                         switch(__toString.call(_svalue)) {
                             case "[object Object]":
@@ -924,6 +927,7 @@ if (__isServer) {
 
             if(_mixins && _mixins.length){
                 zn.each(_mixins, function (mixin){
+                    if(!mixin) return;
                     zn.extend(_props, mixin.getProperties(handler, context));
                 });
             }
@@ -1435,6 +1439,7 @@ if (__isServer) {
 
             if(_mixins.length){
                 zn.each(_mixins, function (mixin){
+                    if(!mixin) return;
                     if(mixin['@init']){
                         _mixinCtor = mixin['@init'].meta;
                         _mixinCtor = zn.is(_mixinCtor, 'function') ? _mixinCtor : _mixinCtor.value;
