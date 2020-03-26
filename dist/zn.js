@@ -154,7 +154,7 @@ if (__isServer) {
                     for(var key in source){
                         _tvalue = target[key];
                         _svalue = source[key];
-                        if(!source.hasOwnProperty(key) || !target.hasOwnProperty(key)){
+                        if(!source.hasOwnProperty(key)){
                             continue;
                         }
             
