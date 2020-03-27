@@ -146,11 +146,17 @@ if (__isServer) {
 
             return _target;
         },
+        isJson: function (obj) {
+            return (typeof(obj) == "object" && __toString.call(obj).toLowerCase() == "[object object]" && obj.constructor.toString() == 'function Object() { [native code] }');
+        },
         deepAssign: function (target, source){
             var _tvalue = null,
                 _svalue = null;
             switch(__toString.call(source)){
-                case "[object Object]":    
+                case "[object Object]":
+                    if(!__builtin__.isJson(source)) {
+                        return target;
+                    }
                     for(var key in source){
                         _tvalue = target[key];
                         _svalue = source[key];
@@ -160,6 +166,9 @@ if (__isServer) {
             
                         switch(__toString.call(_svalue)) {
                             case "[object Object]":
+                                if(!__builtin__.isJson(_svalue)) {
+                                    continue;
+                                }
                                 _svalue = this.deepAssign({}, _svalue);
                                 if(__toString.call(_tvalue) == "[object Object]"){
                                     target[key] = this.deepAssign(_tvalue, _svalue);
