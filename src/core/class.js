@@ -544,11 +544,12 @@
                         context: null
                     }
                 ];
-
-                _listeners.push(zn.extend({
-                    owner: this,
-                    handler: handler
-                }, options));
+                if(_listeners.push && typeof _listeners.push == 'function') {
+                    _listeners.push(zn.extend({
+                        owner: this,
+                        handler: handler
+                    }, options));
+                }
             }
 
             return this;
