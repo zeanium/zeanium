@@ -984,6 +984,7 @@
 
                         for (var i = 0, _len = _mixins.length; i < _len; i++) {
                             _mixin = _mixins[i];
+                            if(!_mixin) continue;
                             if(_mixin['@init']){
                                 _ctor = _mixin['@init'].meta;
                                 _ctor = zn.is(_ctor, 'function') ? _ctor : _ctor.value;
