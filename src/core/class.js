@@ -14,6 +14,7 @@
 
     var GLOBAL = zn.GLOBAL,
         MEMBER_PREFIX = '@',
+        __slice = Array.prototype.slice,
         _id_ = 1,  /*class id var*/
         __id__ = 1;  /*instance id var*/
 
@@ -631,6 +632,9 @@
                     _listener = _listeners[i];
                     if (_listener && _listener.handler) {
                         if (options && options.method == 'apply') {
+                            if(options.ownerFirst){
+                                data.unshift(_listener.owner);
+                            }
                             _temp = _listener.handler.apply(_listener.context || _listener.owner, data);
                         } else {
                             _temp = _listener.handler.call(_listener.context || _listener.owner, _listener.owner, data, options);
@@ -643,7 +647,45 @@
                         }
                         if (options && options.overwrite) {
                             _result = _temp;
-                        } else if (_temp) {
+                        } else if (_temp != null) {
+                            return _temp;
+                        }
+                    }
+                }
+            }
+
+            return _result;
+        },
+        /**
+         * Trigger an event.
+         * @method fire
+         * @param name {String}
+         * @param [data] {*}
+         * @param [options] {Object}
+         */
+        fireApply: function () {
+            var _argv = __slice.call(arguments),
+                _name = _argv.shift();
+            if(!_name){
+                return this;
+            }
+
+            var _listeners = this.__handlers__[_name],
+                _listener,
+                _result = null,
+                _temp = null;
+            if (_listeners) {
+                for (var i = 0, length = _listeners.length; i < length; i++) {
+                    _listener = _listeners[i];
+                    if (_listener && _listener.handler) {
+                        _temp = _listener.handler.apply(_listener.context || _listener.owner, _argv);
+                        if (_temp === false) {
+                            return false;
+                        }
+                        if (_temp === -1) {
+                            continue;
+                        }
+                        if (_temp != null) {
                             return _temp;
                         }
                     }
