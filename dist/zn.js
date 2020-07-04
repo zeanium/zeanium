@@ -1220,10 +1220,9 @@ if (__isServer) {
         },
         /**
          * Trigger an event.
-         * @method fire
+         * @method fireApply
          * @param name {String}
-         * @param [data] {*}
-         * @param [options] {Object}
+         * @param [arguments] {*}
          */
         fireApply: function () {
             var _argv = __slice.call(arguments),
@@ -1261,14 +1260,33 @@ if (__isServer) {
          * @method dispose
          */
         dispose: function () {
-            return this.__handlers__ = {}, this;
+            this.__id__ = null;
+            delete this.__id__;
+            for(var key in this.__handlers__) {
+                this.__handlers__[key] = null;
+                if(this.__handlers__[key] && this.__handlers__[key].length) {
+                    this.__handlers__[key].forEach(function (handler, index){
+                        this.__handlers__[key][index] = null;
+                        delete this.__handlers__[key][index];
+                    });
+                }
+                delete this.__handlers__[key];
+            }
+            this.__handlers__ = null;
+            delete this.__handlers__;
+            this.__initializing__ = null;
+            delete this.__initializing__;
+            this.__super__ = null;
+            delete this.__super__;
+            this.__afters__ = null;
+            delete this.__afters__;
         },
         /**
          * Destroy current object.
          * @method destroy
          */
         destroy: function () {
-            return this.dispose();
+            this.dispose();
         },
         /**
          * Call overridden method from super class
@@ -2728,26 +2746,20 @@ if (__isServer) {
      * @class TaskProcessor
      **/
     var TaskProcessor = zn.Class({
-        events: ['init', 'stop', 'error', 'finished'],
+        events: ['stop', 'error', 'finished'],
         properties: {
-            queue: null,
             status: null
         },
         methods: {
-            init: function (queue, events) {
-                this._queue = queue;
+            init: function (events) {
                 this._status = TASK_STATE.PENDING;
                 if(events && typeof events == 'object'){
                     for(var key in events){
                         this.on(key, events[key]);
                     }
                 }
-                this.fire('init', queue);
             },
             doTask: function (task, argv){
-                if(!task){
-                    this.fire('error', err);
-                }
                 var _argv = argv || [];
                 if(__toString.call(_argv) != '[object Array]') {
                     _argv = [ _argv ];
@@ -2759,15 +2771,14 @@ if (__isServer) {
                     this._status = TASK_STATE.DOING;
                     var _return = task.handler.apply(task.context, _argv);
                     if(_return === false){
+                        this._status = TASK_STATE.FINISHED;
                         this.fire('stop', _argv);
+                    }else {
+                        task.done(_return);
                     }
                 } catch (err) {
-                    var _return = this.fireApply('error', err, task);
-                    if(_return === false){
-                        this.fire('stop', _argv);
-                    }else{
-                        task.done(err);
-                    }
+                    this._status = TASK_STATE.FINISHED;
+                    this.fire('error', [err, task]);
                 }
             },
             done: function (){
@@ -2787,19 +2798,12 @@ if (__isServer) {
             'insert',
             'pause',
             'resume',
-            'stop',
             'error',
+            'stop',
             'every',
             'destroy',
             'finally'
         ],
-        properties: {
-            count: {
-                get: function (){
-                    return this._tasks.length;
-                }
-            }
-        },
         methods: {
             init: function (inArgs, events) {
                 this._tasks = [];
@@ -2815,15 +2819,24 @@ if (__isServer) {
             },
             destroy: function (){
                 this._tasks = null;
+                delete this._tasks;
                 this._taskProcessors = null;
+                delete this._taskProcessors;
                 this._lastTask = null;
+                delete this._lastTask;
                 this._data = null;
+                delete this._data;
                 this._max = null;
+                delete this._max;
                 this.fire('destroy', this);
-                this.super();
+                this.dispose();
+            },
+            size: function (){
+                return this._tasks.length;
             },
             clear: function (){
                 this._tasks = [];
+                this._data = [];
                 this._lastTask = null;
                 return this.fire('clear'), this;
             },
@@ -2844,17 +2857,17 @@ if (__isServer) {
 
                 return this.fire('resume', this), this;
             },
-            catch: function (handler, context){
+            onError: function (handler, context){
                 return this.on('error', handler, context || this), this;
             },
-            stop: function (handler, context){
+            onStop: function (handler, context){
                 return this.on('stop', handler, context || this), this;
             },
-            finally: function (handler, context){
-                return this.on('finally', handler, context || this), this;
-            },
-            every: function (handler, context){
+            onEvery: function (handler, context){
                 return this.on('every', handler, context || this), this;
+            },
+            onFinally: function (handler, context){
+                return this.on('finally', handler, context || this), this;
             },
             unshift: function (handler, context){
                 return this.insert(handler, context, 0), this;
@@ -2935,7 +2948,7 @@ if (__isServer) {
                 }
                 for (var i = 0; i < _len; i++) {
                     _tp = this._taskProcessors[i];
-                    if(_tp.status == TASK_STATE.FINISHED){
+                    if(_tp.status == TASK_STATE.FINISHED || _tp.status == TASK_STATE.PENDING){
                         return _tp;
                     }
                 }
@@ -2944,7 +2957,7 @@ if (__isServer) {
                 }
             },
             createTaskProcessor: function (){
-                var _processor = new TaskProcessor(this, {
+                var _processor = new TaskProcessor({
                     finished: this.__onProcessorFinished.bind(this),
                     stop: this.__onProcessorStop.bind(this),
                     error: this.__onProcessorError.bind(this)
@@ -2958,19 +2971,49 @@ if (__isServer) {
                 if(!this._tasks) return this;
                 var _task = this._tasks.shift();
                 if(_task){
+                    if(this._paused) return this;
                     var _taskProcessor = this.getTaskProcessor();
                     if(_taskProcessor){
                         if(data != null) {
                             _task.previousResult = data;
                         }
+                        _task.queue = this;
+                        _task.error = function (err){
+                            this.error(err, _task)
+                        }.bind(this);
+                        _task.stop = this.stop.bind(this);
                         _taskProcessor.doTask(_task, data);
                     }
                 }else {
-                    this.fire('finally', Array.from(data || []), { ownerFirst: true, method: 'apply' });
-                    return this.destroy(), null;
+                    this.finally.apply(this, data);
                 }
 
                 return this;
+            },
+            stop: function (){
+                this.clear();
+                var _data = __slice.call(arguments);
+                var _return = this.fire('stop', _data, { ownerFirst: true, method: 'apply' });
+                if(_return !== false){
+                    this.finally.apply(this, _data)
+                }
+
+                return this;
+            },
+            error: function (err, task){
+                var _return = this.fire('error', err);
+                if(_return === true && task){
+                    return task.done.apply(task.processor, task.previousResult), this;
+                }
+                if(_return !== false){
+                    this.finally(err, task);
+                }
+
+                return this;
+            },
+            finally: function (){
+                this.fire('finally', __slice.call(arguments), { ownerFirst: true, method: 'apply' });
+                return this.destroy(), this;
             },
             __onProcessorFinished: function (sender, data){
                 this._data.push(data);
@@ -2980,17 +3023,10 @@ if (__isServer) {
                 }
             },
             __onProcessorStop: function (sender, data){
-                this.clear();
-                this.fire('stop', data, { ownerFirst: true, method: 'apply' });
-                this.fire('finally', Array.from(data || []), { ownerFirst: true, method: 'apply' });
-                this.destroy();
+                this.stop.apply(this, data);
             },
-            __onProcessorError: function (err, task){
-                var _result = this.fire('error', err);
-                if(_result === false) return false;
-                if(_result === true){
-                    task.done.apply(task.processor, task.previousResult);
-                }
+            __onProcessorError: function (sender, data){
+                return this.error.apply(this, data);
             }
         }
     });

@@ -1220,10 +1220,9 @@ if (__isServer) {
         },
         /**
          * Trigger an event.
-         * @method fire
+         * @method fireApply
          * @param name {String}
-         * @param [data] {*}
-         * @param [options] {Object}
+         * @param [arguments] {*}
          */
         fireApply: function () {
             var _argv = __slice.call(arguments),
@@ -1261,14 +1260,33 @@ if (__isServer) {
          * @method dispose
          */
         dispose: function () {
-            return this.__handlers__ = {}, this;
+            this.__id__ = null;
+            delete this.__id__;
+            for(var key in this.__handlers__) {
+                this.__handlers__[key] = null;
+                if(this.__handlers__[key] && this.__handlers__[key].length) {
+                    this.__handlers__[key].forEach(function (handler, index){
+                        this.__handlers__[key][index] = null;
+                        delete this.__handlers__[key][index];
+                    });
+                }
+                delete this.__handlers__[key];
+            }
+            this.__handlers__ = null;
+            delete this.__handlers__;
+            this.__initializing__ = null;
+            delete this.__initializing__;
+            this.__super__ = null;
+            delete this.__super__;
+            this.__afters__ = null;
+            delete this.__afters__;
         },
         /**
          * Destroy current object.
          * @method destroy
          */
         destroy: function () {
-            return this.dispose();
+            this.dispose();
         },
         /**
          * Call overridden method from super class
