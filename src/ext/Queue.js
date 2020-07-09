@@ -44,7 +44,8 @@
                     if(_return === false){
                         this._status = TASK_STATE.FINISHED;
                         this.fire('stop', _argv);
-                    }else {
+                    }
+                    if(_return != null) {
                         task.done(_return);
                     }
                 } catch (err) {
@@ -84,7 +85,7 @@
                 this._max = (inArgs||{}).max || 1;
                 if(events && typeof events == 'object'){
                     for(var key in events){
-                        this.on(key, events[key]);
+                        this.on(key, events[key], this);
                     }
                 }
             },
@@ -249,8 +250,8 @@
                             _task.previousResult = data;
                         }
                         _task.queue = this;
-                        _task.error = function (err){
-                            this.error(err, _task)
+                        _task.error = function (err, task){
+                            this.error(err, task || _task);
                         }.bind(this);
                         _task.stop = this.stop.bind(this);
                         _taskProcessor.doTask(_task, data);
@@ -272,7 +273,7 @@
                 return this;
             },
             error: function (err, task){
-                var _return = this.fire('error', err);
+                var _return = this.fire('error', [ err, task ], { ownerFirst: true, method: 'apply' });
                 if(_return === true && task){
                     return task.done.apply(task.processor, task.previousResult), this;
                 }
@@ -287,8 +288,10 @@
                 return this.destroy(), this;
             },
             __onProcessorFinished: function (sender, data){
-                this._data.push(data);
-                var _result = this.fire('every', Array.from(data || []), { ownerFirst: true, method: 'apply' });
+                if(this._data){
+                    this._data.push(data);
+                }
+                var _result = this.fire('every', data || [], { ownerFirst: true, method: 'apply' });
                 if(_result !== false){
                     this.doTask(data);
                 }
@@ -302,8 +305,8 @@
         }
     });
 
-    zn.queue = function(argv){
-        return new Queue(argv);
+    zn.queue = function(argv, events){
+        return new Queue(argv, events);
     };
 
 })(zn);

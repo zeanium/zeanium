@@ -633,6 +633,7 @@
                     if (_listener && _listener.handler) {
                         if (options && options.method == 'apply') {
                             if(options.ownerFirst){
+                                data = Array.from(data);
                                 data.unshift(_listener.owner);
                             }
                             _temp = _listener.handler.apply(_listener.context || _listener.owner, data);
