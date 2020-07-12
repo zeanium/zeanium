@@ -2282,6 +2282,12 @@ if (__isServer) {
             format: function (){
                 
             },
+            timestampToString: function (value){
+                var _date = new Date(value),
+                    _string = _date.toISOString();
+
+                return _string.split('T')[1].split('Z')[0];
+            },
             nowDateString: function (sep){
                 var date = new Date(),
                     _year = date.getFullYear(),
@@ -2293,17 +2299,19 @@ if (__isServer) {
 
                 return [_year, _month, _date].join(sep || '');
             },
-            nowTimeString: function (sep){
-                var date = new Date(),
+            nowTimeString: function (sep, value){
+                var date = new Date(value),
                     _h = date.getHours(),
                     _m = date.getMinutes(),
-                    _s = date.getSeconds();
+                    _s = date.getSeconds(),
+                    _ms = date.getMilliseconds();
 
                 _h = _h < 10 ? '0' + _h : _h;
                 _m = _m < 10 ? '0' + _m : _m;
                 _s = _s < 10 ? '0' + _s : _s;
+                _ms = _ms < 10 ? '0' + _ms : _ms;
 
-                return [_h, _m, _s].join(sep || ':');
+                return [_h, _m, _s, _ms].join(sep || ':');
             },
             getSecond: function (value) {
                 var _value = value.substring(1,value.length)*1;
