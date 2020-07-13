@@ -9,6 +9,9 @@
     <body>
         <script src="../dist/zn.js"></script>
         <script>
+            zn.logger.define('tag', {
+                color: 'black'
+            });
             zn.logger.on('info', function (logger, data, argv){
                 //console.log(logger, data, argv);
                 return false;
@@ -23,6 +26,19 @@
             zn.error('error: ');
             zn.ok('ok: ');
             zn.trace('trace: ');
+
+            
+
+            zn.logger.on('info');
+            zn.log('log: ');
+            zn.info('info: ');
+            zn.debug('debug: ');
+            zn.error('error: ');
+            zn.warn('warn: ');
+            zn.ok('ok: ');
+            zn.trace('trace: ');
+
+            zn.logger.tag('xxxx');
         </script>
     </body>
 </html>
