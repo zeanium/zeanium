@@ -2,6 +2,10 @@ const zn = require('../dist/zn.js');
 
 require('../dist/zn.js');
 
+zn.logger.define('tag', {
+    color: 'black'
+});
+
 zn.logger.on('info');
 zn.log('log: ');
 zn.info('info: ');
@@ -10,6 +14,8 @@ zn.error('error: ');
 zn.warn('warn: ');
 zn.ok('ok: ');
 zn.trace('trace: ');
+
+zn.logger.tag('xxxx');
 
 return;
 var queue = zn.queue({}, {

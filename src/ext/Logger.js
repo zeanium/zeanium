@@ -204,6 +204,26 @@
                 }
                 return this;
             },
+            define: function (method, config){
+                this._config.levels[method] = zn.extend({
+                    color: 'cyan'
+                }, config);
+
+                var _Constructor = this.constructor;
+                if(_Constructor){
+                    _Constructor.defineEvent(method, {}, _Constructor);
+                    _Constructor.defineMethod(method, { 
+                        value: function (){
+                            this.__consoleLog.call(this, method, arguments);
+                        }.bind(this) 
+                    }, _Constructor);
+                    this[method] = function (){
+                        this.__consoleLog.call(this, method, arguments);
+                    }.bind(this);
+                }
+
+                return this;
+            },
             log: function () {
                 this.__consoleLog.call(this, 'log', arguments);
             },
@@ -216,16 +236,16 @@
             warn: function () {
                 this.__consoleLog.call(this, 'warn', arguments);
             },
-            error: function (obj) {
+            error: function () {
                 this.__consoleLog.call(this, 'error', arguments);
             },
-            ok: function (obj) {
+            ok: function () {
                 this.__consoleLog.call(this, 'ok', arguments);
             },
             trace: function () {
                 this.__consoleLog.call(this, 'trace', arguments);
             },
-            all: function (obj) {
+            all: function () {
                 this.__consoleLog.call(this, 'all', arguments);
             },
             __getDateString: function (date) {
@@ -283,7 +303,7 @@
                     return false;
                 }
                 if (typeof module !== 'undefined' && module.exports){
-                    _color = _level.number;
+                    _color = _level.number != null ? _level.number : _level.color;
                     _prefix = [_time, '[', __NodeConsoleColor__(__NodeConsoleColor__(_type.toUpperCase(), _color), 'Highlight'), '] [', __NodeConsoleColor__(__NodeConsoleColor__(_pos, _color), 'Underline'),']'];
                     _argv.unshift(_prefix.join(' '));
                 }else {
