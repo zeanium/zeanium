@@ -27,9 +27,12 @@
 
                 return _string.split('T')[1].split('Z')[0];
             },
-            nowDateString: function (sep){
-                var date = new Date(),
-                    _year = date.getFullYear(),
+            nowDateString: function (sep, value){
+                var date = new Date();
+                if(value != null && value != undefined){
+                    date = new Date(value);
+                }
+                var _year = date.getFullYear(),
                     _month = date.getMonth() + 1,
                     _date = date.getDate();
 
@@ -39,8 +42,11 @@
                 return [_year, _month, _date].join(sep || '');
             },
             nowTimeString: function (sep, value){
-                var date = new Date(value),
-                    _h = date.getHours(),
+                var date = new Date();
+                if(value != null && value != undefined){
+                    date = new Date(value);
+                }
+                var _h = date.getHours(),
                     _m = date.getMinutes(),
                     _s = date.getSeconds(),
                     _ms = date.getMilliseconds();
