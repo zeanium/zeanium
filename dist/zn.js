@@ -114,11 +114,16 @@ if (__isServer) {
 
             return _value;
         },
-        uuid: function () {
-            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        uuid: function (options) {
+            var _value = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
                 var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
                 return v.toString(16);
-            }).toUpperCase();
+            });
+            if(options && options.ifUpperCase){
+                _value = _value.toUpperCase();
+            }
+
+            return _value;
         },
         fix: function (target){
             var _target = target||{};
