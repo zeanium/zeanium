@@ -314,7 +314,13 @@
                 this.fireApply('all', this, _time, _type, _pos, _originArgv, _argv, _prefix);
                 var _result = this.fireApply(_type, this, _time, _type, _pos, _originArgv, _argv, _prefix);
                 if(_result !== false){
-                    console.log.apply(this, _argv);
+                    if(console.log.apply && typeof console.log.apply == 'function'){
+                        try {
+                            console.log.apply(console.log, _argv);
+                        } catch (err) {
+                            console.error(err);
+                        }
+                    }
                 }
             }
         }

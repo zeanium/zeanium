@@ -78,7 +78,7 @@
             return _target;
         },
         isJson: function (obj) {
-            return (typeof(obj) == "object" && __toString.call(obj).toLowerCase() == "[object object]" && obj.constructor.toString() == 'function Object() { [native code] }');
+            return (typeof(obj) == "object" && __toString.call(obj).toLowerCase() == "[object object]" && obj.constructor.toString().indexOf('function Object() {') == 0);
         },
         deepAssign: function (target, source){
             var _tvalue = null,
@@ -102,7 +102,7 @@
                                 }
                                 _svalue = this.deepAssign({}, _svalue);
                                 if(__toString.call(_tvalue) == "[object Object]"){
-                                    target[key] = this.deepAssign(_tvalue, _svalue);
+                                    target[key] = __builtin__.deepAssign(_tvalue, _svalue);
                                 } else {
                                     target[key] = _svalue;
                                 }
@@ -129,7 +129,7 @@
                     break;
                 case "[object Array]":    
                     source.unshift(target);
-                    __builtin__.deepAssigns.apply(this, source);
+                    __builtin__.deepAssigns.apply(__builtin__.deepAssigns, source);
                     break;
             }
             

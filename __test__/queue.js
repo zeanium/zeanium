@@ -17,7 +17,7 @@ zn.trace('trace: ');
 
 zn.logger.tag('xxxx');
 
-return;
+
 var queue = zn.queue({}, {
     error: function (sender, err){
         console.log('error: ', err);
@@ -37,9 +37,7 @@ queue.push(function (task){
     setTimeout(()=>task.done(2), 5000);
 }).push(function (task, a){
     zn.info(a);
-    task.stop(new Error('xxx'));
-    //setTimeout(()=>task.done(3), 5000);
-    
+    task.done(a);
 }).push(function (task, a){
     zn.info(a);
     setTimeout(()=>task.done(4), 5000);
