@@ -1007,6 +1007,9 @@ if (__isServer) {
          */
         defineEvent: function (name, meta, target) {
             if (!__define.defineEvent(target || this.prototype, name, meta)) {
+                if(this._meta_.events.indexOf(name) == -1){
+                    this._meta_.events.push(name);
+                }
                 this._events_.push(name);
             }
 
@@ -1022,6 +1025,9 @@ if (__isServer) {
          */
         defineProperty: function (name, meta, target) {
             if (!__define.defineProperty(target || this.prototype, name, meta)) {
+                if(!this._meta_.properties[name]){
+                    this._meta_.properties[name] = meta;
+                }
                 this._properties_.push(name);
             }
 
@@ -1037,6 +1043,9 @@ if (__isServer) {
          */
         defineMethod: function (name, meta, target) {
             if (!__define.defineMethod(target || this.prototype, name, meta)) {
+                if(!this._meta_.methods[name]){
+                    this._meta_.methods[name] = meta;
+                }
                 this._methods_.push(name);
             }
 
@@ -1361,6 +1370,14 @@ if (__isServer) {
     zn.isZNObject = function (value) {
         return value instanceof ZNObject;
     };
+
+    zn.isZNFunction = function (value) {
+        if(typeof value == 'function'){
+            return (new value()) instanceof ZNObject; 
+        }
+
+        return false;
+    };    
 
     var __class = {
         _arguments: function (){

@@ -6,6 +6,16 @@ zn.logger.define('tag', {
     color: 'black'
 });
 
+var a = zn.Class({
+
+});
+var b = function (){
+
+}
+
+zn.debug('a: ', zn.isZNFunction(a));
+zn.debug('b: ', zn.isZNFunction(b));
+
 zn.logger.on('info');
 zn.log('log: ');
 zn.info('info: ');
