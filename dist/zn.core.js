@@ -918,17 +918,28 @@ if (__isServer) {
     };
 
     var classMethods = {
-        toString: function (){
-            return JSON.stringify({
+        toJson: function (){
+            return {
                 ClassName: this._name_ || 'Anonymous',
                 ClassID: this._id_
-            });
+            };
+        },
+        info: function (){
+            return {
+                _id_: this._id_,
+                _name_: this._name_,
+                _super_: this._super_,
+                _events_: this._events_,
+                _properties_: this._properties_,
+                _methods_: this._methods_,
+                _meta_: this._meta_
+            };
         },
         createSelf: function (){
             return new this.constructor.apply(this, Array.prototype.slice.call(arguments));
         },
-        getProperties: function(handler, context){
-            var _props = {};
+        getProperties: function(handler, context, exists){
+            var _props = {}, _exists = exists || {};
             if(!this.getMeta || this._name_ == 'ZNObject'){
                 return _props;
             }
@@ -937,17 +948,21 @@ if (__isServer) {
                 _mixins = this._mixins_;
 
             if(_super){
-                zn.extend(_props, _super.getProperties(handler, context));
+                zn.extend(_props, _super.getProperties(handler, context, _exists));
             }
 
             if(_mixins && _mixins.length){
                 zn.each(_mixins, function (mixin){
                     if(!mixin) return;
-                    zn.extend(_props, mixin.getProperties(handler, context));
+                    zn.extend(_props, mixin.getProperties(handler, context, _exists));
                 });
             }
 
             zn.each(this.getMeta('properties'), function (prop, name){
+                if(_exists[name]){
+                    return -1;
+                }
+                _exists[name] = prop;
                 var _callback = handler && handler.call(context || this, prop, name, _props);
                 if(_callback === false || _callback === -1){
                     return _callback;
@@ -1007,10 +1022,12 @@ if (__isServer) {
          */
         defineEvent: function (name, meta, target) {
             if (!__define.defineEvent(target || this.prototype, name, meta)) {
-                if(this._meta_.events.indexOf(name) == -1){
+                if(this._meta_.events.indexOf(name) === -1){
                     this._meta_.events.push(name);
                 }
-                this._events_.push(name);
+                if(this._events_.indexOf(name) === -1){
+                    this._events_.push(name);
+                }
             }
 
             return this;
@@ -1028,7 +1045,9 @@ if (__isServer) {
                 if(!this._meta_.properties[name]){
                     this._meta_.properties[name] = meta;
                 }
-                this._properties_.push(name);
+                if(this._properties_.indexOf(name) === -1){
+                    this._properties_.push(name);
+                }
             }
 
             return this;
@@ -1046,7 +1065,9 @@ if (__isServer) {
                 if(!this._meta_.methods[name]){
                     this._meta_.methods[name] = meta;
                 }
-                this._methods_.push(name);
+                if(this._methods_.indexOf(name) === -1){
+                    this._methods_.push(name);
+                }
             }
 
             return this;
