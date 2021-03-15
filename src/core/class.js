@@ -369,10 +369,10 @@
             };
         },
         createSelf: function (){
-            return this.__ctor__.apply(this, Array.prototype.slice.call(arguments)) || this;
+            return this.__ctor__.apply(this, Array.prototype.slice.call(arguments));
         },
         createInstance: function (){
-            return this.__ctor__.apply(this, Array.prototype.slice.call(arguments)) || this;
+            return this.__ctor__.apply(this, Array.prototype.slice.call(arguments));
         },
         getProperties: function(handler, context, exists){
             var _props = {}, _exists = exists || {};
@@ -1129,7 +1129,7 @@
                 _SuperClass.prototype = _super.prototype;
                 _prototype = new _SuperClass();
                 _prototype.constructor = ZNClass;
-                _prototype.__type__ = _name || 'Anonymous';
+                _prototype.__type__ = _name || 'Anonymous(ZNClass)';
                 _prototype.__super__ = _super;
 
 
