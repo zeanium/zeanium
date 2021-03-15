@@ -369,7 +369,10 @@
             };
         },
         createSelf: function (){
-            return new this.constructor.apply(this, Array.prototype.slice.call(arguments));
+            return this.__ctor__.apply(this, Array.prototype.slice.call(arguments)) || this;
+        },
+        createInstance: function (){
+            return this.__ctor__.apply(this, Array.prototype.slice.call(arguments)) || this;
         },
         getProperties: function(handler, context, exists){
             var _props = {}, _exists = exists || {};
@@ -1117,7 +1120,7 @@
 
                         this.__initializing__ = false;
                     };
-
+                ZNClass.__ctor__ = ZNClass;
                 ZNClass._ctors_ = [];
             }
 
