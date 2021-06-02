@@ -302,7 +302,11 @@ if (__isServer) {
                     for (; _result && i < _len; i++) {
                         _token = _tokens[i];
                         if (_result.__get__) {
-                            _result = _result.__get__(_token);
+                            if(_result.__get__(_token)) {
+                                _result = _result.__get__(_token);
+                            }else if(_result[_token]){
+                                _result = _result[_token];
+                            }
                         } else {
                             _result = _result[_token];
                         }
@@ -2329,16 +2333,31 @@ if (__isServer) {
                 
             },
             timestampToString: function (value){
-                var _date = new Date(value),
-                    _string = _date.toISOString();
+                var _date = null;
+                if(zn.is(value, 'string')){
+                    _date = new Date(value);
+                }
 
+                if(value instanceof Date){
+                    _date = value;
+                }
+
+                if(!_date){
+                    return '';
+                }
+
+                var _string = _date.toISOString();
                 return _string.split('T')[1].split('Z')[0];
             },
             nowDateString: function (sep, value){
                 var date = new Date();
-                if(value != null && value != undefined){
+                if(zn.is(value, 'string')){
                     date = new Date(value);
                 }
+                if(!date){
+                    return '';
+                }
+
                 var _year = date.getFullYear(),
                     _month = date.getMonth() + 1,
                     _date = date.getDate();
@@ -2350,9 +2369,13 @@ if (__isServer) {
             },
             nowTimeString: function (sep, value){
                 var date = new Date();
-                if(value != null && value != undefined){
+                if(zn.is(value, 'string')){
                     date = new Date(value);
                 }
+                if(!date){
+                    return '';
+                }
+
                 var _h = date.getHours(),
                     _m = date.getMinutes(),
                     _s = date.getSeconds(),
@@ -2377,6 +2400,9 @@ if (__isServer) {
                 }
             },
             asString: function (date){
+                if(!date){
+                    date = new Date();
+                }
                 var format = DATE_FORMAT.ISO8601;
                 if (typeof(date) === "string") {
                     format = arguments[0];

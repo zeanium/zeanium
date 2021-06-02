@@ -318,16 +318,31 @@
                 
             },
             timestampToString: function (value){
-                var _date = new Date(value),
-                    _string = _date.toISOString();
+                var _date = null;
+                if(zn.is(value, 'string')){
+                    _date = new Date(value);
+                }
 
+                if(value instanceof Date){
+                    _date = value;
+                }
+
+                if(!_date){
+                    return '';
+                }
+
+                var _string = _date.toISOString();
                 return _string.split('T')[1].split('Z')[0];
             },
             nowDateString: function (sep, value){
                 var date = new Date();
-                if(value != null && value != undefined){
+                if(zn.is(value, 'string')){
                     date = new Date(value);
                 }
+                if(!date){
+                    return '';
+                }
+
                 var _year = date.getFullYear(),
                     _month = date.getMonth() + 1,
                     _date = date.getDate();
@@ -339,9 +354,13 @@
             },
             nowTimeString: function (sep, value){
                 var date = new Date();
-                if(value != null && value != undefined){
+                if(zn.is(value, 'string')){
                     date = new Date(value);
                 }
+                if(!date){
+                    return '';
+                }
+
                 var _h = date.getHours(),
                     _m = date.getMinutes(),
                     _s = date.getSeconds(),
@@ -366,6 +385,9 @@
                 }
             },
             asString: function (date){
+                if(!date){
+                    date = new Date();
+                }
                 var format = DATE_FORMAT.ISO8601;
                 if (typeof(date) === "string") {
                     format = arguments[0];

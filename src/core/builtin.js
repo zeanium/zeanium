@@ -228,7 +228,11 @@
                     for (; _result && i < _len; i++) {
                         _token = _tokens[i];
                         if (_result.__get__) {
-                            _result = _result.__get__(_token);
+                            if(_result.__get__(_token)) {
+                                _result = _result.__get__(_token);
+                            }else if(_result[_token]){
+                                _result = _result[_token];
+                            }
                         } else {
                             _result = _result[_token];
                         }
