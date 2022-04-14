@@ -400,6 +400,10 @@
                     switch (type.toLowerCase()) {
                         case 'plain':
                             return target && target.constructor === Object;
+                        case 'function':
+                            return target && (target.constructor.name == 'Function' || target.constructor.name == 'AsyncFunction');
+                        case 'asyncfunction':
+                            return target && (target.constructor.name == 'AsyncFunction');
                         default:
                             return this.type(target) === type;
                     }
