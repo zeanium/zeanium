@@ -11,6 +11,27 @@
     zn.char = zn.Class({
         static: true,
         methods: {
+            trim: function (obj, attr_name) {
+                var attr_value = obj.attr(attr_name);
+                if (!attr_value) {
+                    attr_value = "";
+                } else {
+                    attr_value = attr_value.trim();
+                }
+                return attr_value;
+            },
+            trimLeft: function (str, left) {
+                if(str && str.startsWith(left)) {
+                    str = str.substr(left.length);  
+                }
+                return str;  
+            },
+            trimRight: function (str, right) {
+                if(str && str.endsWith(right)) {
+                    str = str.substr(0, str.length - right.length);  
+                }
+                return str;  
+            },
             getRandomChar: function (){
                 return this.getUppercaseLetters()[Math.floor(Math.random()*26)];
             },

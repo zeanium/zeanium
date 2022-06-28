@@ -79,6 +79,72 @@ if (__isServer) {
     var __toString = Object.prototype.toString;
 
     var __builtin__ = {
+        timeout: function (ms) {
+            return new Promise(function(resolve){
+                setTimeout(resolve, ms);
+            });
+        },
+        truncate: function (str, maxLen) {
+            if (str.length <= maxLen) {
+                return '[' + str + ' '.repeat(maxLen - str.length) + ']';
+            }
+            var part = maxLen / 2
+            return '[' + str.substring(0, part - 3) + "..." + str.substring(str.length - part) + ']';
+        },
+        formatFieldData: function (data, includes, excludes){
+            var _value = null, _data = {};
+            var _includes = includes || [], _excludes = excludes || [];
+            for(var _key in data){
+                if(_includes.length && _includes.indexOf(_key) === -1) {
+                    continue;
+                }
+                if(_excludes.indexOf(_key) != -1){
+                    continue;
+                }
+                _value = data[_key];
+                switch(zn.type(_value)) {
+                    case 'object':
+                    case 'array':
+                        _value = JSON.stringify(_value);
+                        break;
+                }
+    
+                if(zn.is(_value, 'string')) {
+                    _value = _value.replace(/'/g, "");
+                    _value = _value.replace(/\n/g, "");
+                }
+    
+                _data[_key] = _value;
+            }
+    
+            return _data;
+        },
+        sliceArrayData: function (arrayData, size){
+            var _data = [], _ary = [], _length = arrayData.length;
+            if(_length < size + 1){
+                return [ arrayData ];
+            }
+            while(arrayData.length > 0){
+                if(_ary.length == size) {
+                    _data.push(_ary);
+                    _ary = [];
+                }
+                _ary.push(arrayData.shift());
+                if(arrayData.length == 0) {
+                    _data.push(_ary);
+                }
+            }
+            
+            return _data;
+        },
+        splitArrayData: function (arrayData, size){
+            var _totalLength = arrayData.length, _totalSize = Math.ceil(_totalLength / size), _ary = []; 
+            for(var i = 0; i < _totalSize; i++) {
+                _ary[i] = arrayData.slice(i * size, Math.min((i+1) * size, _totalLength));
+            }
+    
+            return _ary;
+        },
         isNull: function (value){
             return value === null || value === undefined;
         },
