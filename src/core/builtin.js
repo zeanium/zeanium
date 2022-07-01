@@ -55,7 +55,16 @@
                             _value = (parseFloat(_value||0)).toFixed(2);
                             break;
                         case 'datetime':
-                            _value = zn.date.dateFormat("yyyy-MM-dd hh:mm:ss", _value);
+                            switch(zn.type(_value)) {
+                                case 'date':
+                                    _value = zn.date.dateFormat("yyyy-MM-dd hh:mm:ss", _value);
+                                    break;
+                                case 'string':
+                                    if(!_value){
+                                        _value = null;
+                                    }
+                                    break;
+                            }
                             break;
                         default:
                             break;
@@ -121,7 +130,7 @@
                 __builtinZNObject__.each(_values, function (value, index){
                     if(value!==null&&value!==undefined){
                         value = (__builtinZNObject__.is(value, 'object')?JSON.stringify(value):(value.toString?value.toString():value));
-                        _value = _value.replace(new RegExp('\\{'+index+'\\}', 'gi'), value);
+                        _value = decodeURIComponent(_value.replace(new RegExp('\\{'+index+'\\}', 'gi'), encodeURIComponent(value)));
                     }
                 });
             }
