@@ -91,8 +91,8 @@ if (__isServer) {
             var part = maxLen / 2
             return '[' + str.substring(0, part - 3) + "..." + str.substring(str.length - part) + ']';
         },
-        formatFieldData: function (data, includes, excludes){
-            var _value = null, _data = {};
+        formatFieldData: function (data, includes, excludes, dataTypes){
+            var _value = null, _data = {}, _types = dataTypes || {};
             var _includes = includes || [], _excludes = excludes || [];
             for(var _key in data){
                 if(_includes.length && _includes.indexOf(_key) === -1) {
@@ -107,11 +107,33 @@ if (__isServer) {
                     case 'array':
                         _value = JSON.stringify(_value);
                         break;
+                    case 'function':
+                        _value = _value(_key, data);
+                        break;
                 }
     
                 if(zn.is(_value, 'string')) {
                     _value = _value.replace(/'/g, "");
                     _value = _value.replace(/\n/g, "");
+                }
+
+                if(_types[_key]) {
+                    switch(_types[_key]) {
+                        case 'string':
+                            _value = (_value).toString();
+                            break;
+                        case 'int':
+                            _value = parseInt(_value||0);
+                            break;
+                        case 'float':
+                            _value = (parseFloat(_value||0)).toFixed(2);
+                            break;
+                        case 'datetime':
+                            _value = zn.date.dateFormat("yyyy-MM-dd hh:mm:ss", _value);
+                            break;
+                        default:
+                            break;
+                    }
                 }
     
                 _data[_key] = _value;
