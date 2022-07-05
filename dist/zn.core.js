@@ -1856,7 +1856,9 @@ if (__isServer) {
             zn.each(_argv, function (value, index){
                 if(value!==null&&value!==undefined){
                     value = (zn.type(value)=='object'?JSON.stringify(value):(value.toString?value.toString():value));
-                    _self = decodeURIComponent(_self.replace(new RegExp('\\{' + index + '\\}', 'gi'), encodeURIComponent(value)));
+                    _self = _self.replace(/%/g, '%25');
+                    _self = _self.replace(new RegExp('\\{' + index + '\\}', 'gi'), encodeURIComponent(value));
+                    _self = decodeURIComponent(_self);
                 }
             });
 
