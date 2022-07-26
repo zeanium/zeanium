@@ -102,6 +102,47 @@
     
             return _ary;
         },
+        resolveValue: function (){
+            var _args = arguments;
+            if(_args.length){
+                for (var i = 0, _size = _args.length; i < _size; i++) {
+                    if(_args[i] != null){
+                        return _args[i];
+                    }
+                }
+            }
+        },
+        resolveObjectValue: function (obj, keys){
+            if(obj && keys && keys.length){
+                for (var i = 0, _size = keys.length; i < _size; i++) {
+                    if(obj[keys[i]] != null){
+                        return obj[keys[i]];
+                    }
+                }
+            }
+        },
+        parseInt: function (value){
+            if(typeof value == 'string'){
+                value = +value;
+            }
+            var _value = parseInt(value);
+            if(isNaN(_value)){
+                _value = 0;
+            }
+
+            return _value;
+        },
+        parseFloat: function (value){
+            if(typeof value == 'string'){
+                value = +value;
+            }
+            var _value = parseFloat(value);
+            if(isNaN(_value)){
+                _value = 0;
+            }
+
+            return _value;
+        },
         isNull: function (value){
             return value === null || value === undefined;
         },
