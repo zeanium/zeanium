@@ -44,29 +44,40 @@
                 }
 
                 if(_types[_key]) {
-                    switch(_types[_key]) {
+                    switch(zn.type(_types[_key])){
                         case 'string':
-                            _value = (_value).toString();
-                            break;
-                        case 'int':
-                            _value = parseInt(_value||0);
-                            break;
-                        case 'float':
-                            _value = (parseFloat(_value||0)).toFixed(2);
-                            break;
-                        case 'datetime':
-                            switch(zn.type(_value)) {
-                                case 'date':
-                                    _value = zn.date.dateFormat("yyyy-MM-dd hh:mm:ss", _value);
-                                    break;
+                            switch(_types[_key]) {
                                 case 'string':
-                                    if(!_value){
-                                        _value = null;
+                                    _value = (_value).toString();
+                                    break;
+                                case 'int':
+                                    _value = parseInt(_value||0);
+                                    break;
+                                case 'float':
+                                    _value = (parseFloat(_value||0)).toFixed(2);
+                                    break;
+                                case 'datetime':
+                                    switch(zn.type(_value)) {
+                                        case 'date':
+                                            _value = zn.date.dateFormat("yyyy-MM-dd hh:mm:ss", _value);
+                                            break;
+                                        case 'string':
+                                            if(!_value){
+                                                _value = null;
+                                            }
+                                            break;
                                     }
+                                    break;
+                                default:
                                     break;
                             }
                             break;
-                        default:
+                        case 'function':
+                            var _temp = _types[_key].call(null, _value);
+                            if(_temp === false || _temp === null || _temp === undefined){
+                                continue;
+                            }
+                            _value = _temp;
                             break;
                     }
                 }
