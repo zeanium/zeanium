@@ -394,7 +394,7 @@
                 });
             }
 
-            zn.each(this.getMeta('properties'), function (prop, name){
+            zn.each(this.getMeta('props') || this.getMeta('properties'), function (prop, name){
                 if(_exists[name]){
                     return -1;
                 }
