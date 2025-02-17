@@ -1,1 +1,1 @@
-!function(t){t.data=t.Class({static:!0,methods:{}})}(zn);
+(a=>{a.data=a.Class({static:!0,methods:{}})})(zn);
